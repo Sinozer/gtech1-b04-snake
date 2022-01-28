@@ -12,29 +12,28 @@ Snake::Snake(unsigned int snakeLen, char direction)
         direction != 'S' &&
         direction != 'W' &&
         direction != 'E')
-        return;
+        direction = START_DIRECTION;
+
+    int x = (CHUNK_SIZE_X * START_X) + (MAP_BORDER / 2) + (SNAKE_BORDER / 2);
+    int y = (CHUNK_SIZE_Y * START_Y) + (MAP_BORDER / 2) + (SNAKE_BORDER / 2);
 
     if (snakeLen <= 0)
     {
-        grow(CHUNK_SIZE_X, CHUNK_SIZE_Y, direction);
+        grow(x, y, direction);
     }
     else
     {
-        int x;
-        int y;
-        for (int i = 0; i < snakeLen; i++)
+        for (int i = 1; i < snakeLen + 1; i++)
         {
             switch (direction)
             {
             case 'N':
             case 'S':
-                x = CHUNK_SIZE_X;
-                y = i * CHUNK_SIZE_Y;
+                y += CHUNK_SIZE_Y;
                 break;
             case 'W':
             case 'E':
-                x = i * CHUNK_SIZE_X;
-                y = CHUNK_SIZE_Y;
+                x += CHUNK_SIZE_X;
                 break;
             default:
                 break;
@@ -80,8 +79,6 @@ void Snake::printSnake(SDL_Renderer *renderer)
         if (SDL_RenderFillRect(renderer, &rectangle) != 0)
             Utils::SDL_ExitWithError("RenderFillRect");
 
-        SDL_RenderPresent(renderer);
-
         temp = temp->next;
     }
 }
@@ -95,7 +92,7 @@ void Snake::debugPrint(void)
 
     while (temp != NULL)
     {
-        printf("X: %d\nY: %d\nDIRECTION: %c\n", temp->getX(), temp->getY(), temp->getDirection());
+        printf("X: %d\nY: %d\nDIRECTION: %c\n", temp->getX() / 32, temp->getY() / 32, temp->getDirection());
 
         temp = temp->next;
     }
@@ -126,6 +123,50 @@ void Snake::changeDirection(char direction)
     }
 }
 
+SDL_bool Snake::checkCollideWall()
+{
+    if ((head->getX() + 32) / 32 > MAP_SIZE_X ||
+        (head->getY() + 32) / 32 > MAP_SIZE_Y ||
+        head->getX() < 0 ||
+        head->getY() < 0)
+        return SDL_TRUE;
+    return SDL_FALSE;
+}
+
+SDL_bool Snake::checkCollideBody()
+{
+    Body *temp = head;
+
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+
+        switch (head->getDirection())
+        {
+        case 'N':
+            if (head->getX() / 32 == (temp->getX() / 32) &&
+                (head->getY()) / 32 == (temp->getY() / 32))
+                return SDL_TRUE;
+        case 'S':
+            if (head->getX() / 32 == temp->getX() / 32 &&
+                (head->getY()) / 32 == temp->getY() / 32)
+                return SDL_TRUE;
+        case 'W':
+            if ((head->getX()) / 32 == temp->getX() / 32 &&
+                head->getY() / 32 == temp->getY() / 32)
+                return SDL_TRUE;
+            break;
+        case 'E':
+            if ((head->getX()) / 32 == temp->getX() / 32 &&
+                head->getY() / 32 == temp->getY() / 32)
+                return SDL_TRUE;
+        default:
+            return SDL_FALSE;
+        }
+    }
+    return SDL_FALSE;
+}
+
 void Snake::move()
 {
     deleteBody(getLen());
@@ -133,35 +174,58 @@ void Snake::move()
     int xPos = head->getX();
     int yPos = head->getY();
 
-    // switch (head->getDirection())
-    // {
-    // case 'N':
-    //     yPos -= CHUNK_SIZE_Y;
-    //     break;
-    // case 'S':
-    //     yPos += CHUNK_SIZE_Y;
-    //     break;
-    // case 'W':
-    //     xPos -= CHUNK_SIZE_X;
-    //     break;
-    // case 'E':
-    //     xPos += CHUNK_SIZE_X;
-    //     break;
-    // default:
-    //     break;
-    // }
-    grow(xPos, yPos, head->getDirection());
+    growHead();
+}
+
+void Snake::growTail()
+{
+    if (head == NULL)
+        return;
+
+    Body *temp = head;
+
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    int xPos = temp->getX();
+    int yPos = temp->getY();
+
+    switch (temp->getDirection())
+    {
+    case 'N':
+        yPos += CHUNK_SIZE_Y;
+        break;
+    case 'S':
+        yPos -= CHUNK_SIZE_Y;
+        break;
+    case 'W':
+        xPos += CHUNK_SIZE_X;
+        break;
+    case 'E':
+        xPos -= CHUNK_SIZE_X;
+        break;
+    default:
+        break;
+    }
+
+    Body *newBody = new Body(xPos, yPos, temp->getDirection());
+
+    newBody->setX(xPos);
+    newBody->setY(yPos);
+    newBody->setDirection(temp->getDirection());
+    temp->next = newBody;
 }
 
 void Snake::grow(int x, int y, char direction)
 {
-    Body *newBody = new Body();
+    Body *newBody = new Body(x, y, 'E');
     int xPos = x;
     int yPos = y;
 
     if (head == NULL)
     {
-        Body *newBody = new Body(x, y, 'E');
         head = newBody;
         return;
     }
@@ -189,40 +253,41 @@ void Snake::grow(int x, int y, char direction)
     newBody->setDirection(direction);
     newBody->next = head;
     head = newBody;
+}
 
-    // Body *temp = head;
-    // while (temp != NULL)
-    // {
-    //     temp->setX(xPos);
-    //     temp->setY(yPos);
-    //     temp->setDirection(direction);
+void Snake::growHead()
+{
+    if (head == NULL)
+        return;
 
-    //     switch (direction)
-    //     {
-    //     case 'N':
-    //         yPos -= CHUNK_SIZE_Y;
-    //         break;
-    //     case 'S':
-    //         yPos += CHUNK_SIZE_Y;
-    //         break;
-    //     case 'W':
-    //         xPos -= CHUNK_SIZE_X;
-    //         break;
-    //     case 'E':
-    //         xPos += CHUNK_SIZE_X;
-    //         break;
-    //     default:
-    //         break;
-    //     }
+    int xPos = head->getX();
+    int yPos = head->getY();
 
-    //     if (temp->next == NULL)
-    //         return;
-    //     temp = temp->next;
-    // }
-    // temp->next = newBody;
-    // temp->setX(xPos);
-    // temp->setY(yPos);
-    // temp->setDirection(direction);
+    switch (head->getDirection())
+    {
+    case 'N':
+        yPos -= CHUNK_SIZE_Y;
+        break;
+    case 'S':
+        yPos += CHUNK_SIZE_Y;
+        break;
+    case 'W':
+        xPos -= CHUNK_SIZE_X;
+        break;
+    case 'E':
+        xPos += CHUNK_SIZE_X;
+        break;
+    default:
+        break;
+    }
+
+    Body *newBody = new Body(xPos, yPos, head->getDirection());
+
+    newBody->setX(xPos);
+    newBody->setY(yPos);
+    newBody->setDirection(head->getDirection());
+    newBody->next = head;
+    head = newBody;
 }
 
 void Snake::deleteBody(int bodyPos)

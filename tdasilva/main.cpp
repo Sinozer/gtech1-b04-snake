@@ -4,8 +4,8 @@
 #include "map/map.hpp"
 
 #define FPSLimit 122            // 66 = ~15fps | 33 + ~30fps | 16 = ~60fps
-#define WINDOW_SQUARE_SIZE_X 32 // Size of the square of pixels for X axis
-#define WINDOW_SQUARE_SIZE_Y 32 // Size of the square of pixels for Y axis
+#define WINDOW_SQUARE_SIZE_X 32 // Size of the square in pixels for X axis
+#define WINDOW_SQUARE_SIZE_Y 32 // Size of the square in pixels for Y axis
 
 #define WINDOW_WIDTH WINDOW_SIZE_X *CHUNK_SIZE_X + WINDOW_BORDER  // Calculate window width
 #define WINDOW_HEIGHT WINDOW_SIZE_Y *CHUNK_SIZE_Y + WINDOW_BORDER // Calculate window height
@@ -18,7 +18,7 @@ int main(void)
     SDL_bool running = SDL_TRUE;
     unsigned ticks = 0;
 
-    Snake *snake = new Snake(3, 'E');
+    Snake *snake = new Snake(6, 'E');
 
     while (running)
     {
@@ -26,6 +26,7 @@ int main(void)
         Utils::SDL_Limit_FPS(frame_limit, FPSLimit);
 
         window->clearRenderer();
+        Map::printMap(renderer);
         snake->printSnake(renderer);
         snake->move();
 
@@ -56,7 +57,10 @@ int main(void)
                     snake->move();
                     continue;
                 case SDLK_b:
-                    snake->grow(snake->getHead().getX(), snake->getHead().getY(), snake->getHead().getDirection());
+                    snake->growTail();
+                    continue;
+                case SDLK_c:
+                    snake->debugPrint();
                     continue;
                 case SDLK_ESCAPE:
                     running = SDL_FALSE;
@@ -73,10 +77,14 @@ int main(void)
                 break;
             }
         }
+        SDL_RenderPresent(renderer);
+        if (snake->checkCollideWall() ||
+            snake->checkCollideBody())
+            running = SDL_FALSE;
     }
     if (window != NULL)
         delete (window);
     return 0;
 }
 
-// TO COMPILE USE: g++ utils/utils.cpp MainSDLWindow.cpp entity/snake/body.cpp entity/snake/snake.cpp main.cpp -lSDL2 -o main
+// TO COMPILE USE: g++ utils/utils.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp main.cpp -lSDL2 -o main

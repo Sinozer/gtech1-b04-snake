@@ -9,14 +9,13 @@ class Body
 {
 public:
     Body *next;
-    Body();
     Body(int x, int y, char direction);
-    int getX();
-    int getY();
-    void setX(int x);
-    void setY(int y);
-    char getDirection();
-    void setDirection(char direction);
+    int getX();                        // Return the X coordinate (in pixels)
+    int getY();                        // Return the Y coordinate (in pixels)
+    char getDirection();               // Return the direction
+    void setX(int x);                  // Set the X coordinate (in pixels)
+    void setY(int y);                  // Set the Y coordinate (in pixels)
+    void setDirection(char direction); // Set the direction
 
 private:
     int x;

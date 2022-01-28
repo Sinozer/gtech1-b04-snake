@@ -1,13 +1,5 @@
 #include "body.hpp"
 
-Body::Body()
-{
-    this->x = 0;
-    this->y = 0;
-    this->direction = 'E';
-    next = NULL;
-}
-
 Body::Body(int x, int y, char direction)
 {
     this->x = x;
