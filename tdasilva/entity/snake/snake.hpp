@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <SDL2/SDL.h>
 #include "body.hpp"
 
 #define SNAKE_BORDER 4

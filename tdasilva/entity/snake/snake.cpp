@@ -17,29 +17,11 @@ Snake::Snake(unsigned int snakeLen, char direction)
     int x = (CHUNK_SIZE_X * START_X) + (MAP_BORDER / 2) + (SNAKE_BORDER / 2);
     int y = (CHUNK_SIZE_Y * START_Y) + (MAP_BORDER / 2) + (SNAKE_BORDER / 2);
 
-    if (snakeLen <= 0)
+    grow(x, y, direction);
+
+    for (int i = 1; i < snakeLen; i++)
     {
-        grow(x, y, direction);
-    }
-    else
-    {
-        for (int i = 1; i < snakeLen + 1; i++)
-        {
-            switch (direction)
-            {
-            case 'N':
-            case 'S':
-                y += CHUNK_SIZE_Y;
-                break;
-            case 'W':
-            case 'E':
-                x += CHUNK_SIZE_X;
-                break;
-            default:
-                break;
-            }
-            grow(x, y, direction);
-        }
+        growTail();
     }
 
     this->direction = direction;
@@ -96,6 +78,7 @@ void Snake::debugPrint(void)
 
         temp = temp->next;
     }
+    printf("\n\n");
 }
 
 void Snake::changeDirection(char direction)
@@ -141,28 +124,9 @@ SDL_bool Snake::checkCollideBody()
     {
         temp = temp->next;
 
-        switch (head->getDirection())
-        {
-        case 'N':
-            if (head->getX() / 32 == (temp->getX() / 32) &&
-                (head->getY()) / 32 == (temp->getY() / 32))
-                return SDL_TRUE;
-        case 'S':
-            if (head->getX() / 32 == temp->getX() / 32 &&
-                (head->getY()) / 32 == temp->getY() / 32)
-                return SDL_TRUE;
-        case 'W':
-            if ((head->getX()) / 32 == temp->getX() / 32 &&
-                head->getY() / 32 == temp->getY() / 32)
-                return SDL_TRUE;
-            break;
-        case 'E':
-            if ((head->getX()) / 32 == temp->getX() / 32 &&
-                head->getY() / 32 == temp->getY() / 32)
-                return SDL_TRUE;
-        default:
-            return SDL_FALSE;
-        }
+        if (head->getX() / 32 == (temp->getX() / 32) &&
+            (head->getY()) / 32 == (temp->getY() / 32))
+            return SDL_TRUE;
     }
     return SDL_FALSE;
 }
@@ -220,7 +184,7 @@ void Snake::growTail()
 
 void Snake::grow(int x, int y, char direction)
 {
-    Body *newBody = new Body(x, y, 'E');
+    Body *newBody = new Body(x, y, direction);
     int xPos = x;
     int yPos = y;
 
