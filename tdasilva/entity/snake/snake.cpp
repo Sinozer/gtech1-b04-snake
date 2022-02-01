@@ -86,19 +86,19 @@ void Snake::changeDirection(char direction)
     switch (direction)
     {
     case 'N':
-        if (head->getDirection() != 'S')
+        if (head->next->getDirection() != 'S')
             head->setDirection(direction);
         break;
     case 'S':
-        if (head->getDirection() != 'N')
+        if (head->next->getDirection() != 'N')
             head->setDirection(direction);
         break;
     case 'W':
-        if (head->getDirection() != 'E')
+        if (head->next->getDirection() != 'E')
             head->setDirection(direction);
         break;
     case 'E':
-        if (head->getDirection() != 'W')
+        if (head->next->getDirection() != 'W')
             head->setDirection(direction);
         break;
     default:

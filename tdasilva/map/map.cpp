@@ -6,7 +6,7 @@
 void Map::printMap(SDL_Renderer *renderer)
 {
     int testColor = 0;
-    for (int x = 2; x < (WINDOW_SIZE_X * CHUNK_SIZE_X) - 2; x += CHUNK_SIZE_X)
+    for (int x = 2; x < (MAP_SIZE_X * CHUNK_SIZE_X) - 2; x += CHUNK_SIZE_X)
     {
         if (testColor == 0)
         {
@@ -16,16 +16,16 @@ void Map::printMap(SDL_Renderer *renderer)
             testColor = 0;
         }
 
-        for (int y = 2; y < (WINDOW_SIZE_Y * CHUNK_SIZE_Y) - 2; y += CHUNK_SIZE_Y)
+        for (int y = 2; y < (MAP_SIZE_Y * CHUNK_SIZE_Y) - 2; y += CHUNK_SIZE_Y)
         {
             if (testColor == 0)
             {
-                SDL_SetRenderDrawColor(renderer, 142, 204, 57, 1);
+                SDL_SetRenderDrawColor(renderer, 142, 204, 57, 255);
                 testColor = 1;
             }
             else if (testColor == 1)
             {
-                SDL_SetRenderDrawColor(renderer, 167, 217, 72, 1);
+                SDL_SetRenderDrawColor(renderer, 167, 217, 72, 255);
                 testColor = 0;
             }
 

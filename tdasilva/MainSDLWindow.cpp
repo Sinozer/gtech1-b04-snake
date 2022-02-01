@@ -1,10 +1,13 @@
 #include "MainSDLWindow.hpp"
 #include "utils/utils.hpp"
 
-MainSDLWindow::MainSDLWindow()
+MainSDLWindow::MainSDLWindow(const char *title, int width, int height)
 {
     this->window = NULL;
     this->renderer = NULL;
+    Init("Snake", WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND) != 0)
+        Utils::SDL_ExitWithError("SetRenderDrawBlendMode");
 }
 
 MainSDLWindow::~MainSDLWindow()

@@ -12,6 +12,9 @@ public:
     Apple();
     int getX();
     int getY();
+    void setX(int x);
+    void setY(int y);
+    void setRandomCoord();
     void printApple(SDL_Renderer *renderer);
     void debugPrint();
 private:
