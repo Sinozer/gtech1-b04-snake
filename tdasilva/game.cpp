@@ -4,7 +4,7 @@
 
 Game::Game(MainSDLWindow *window, unsigned int snakeLen, char snakeDir)
 {
-    this->snake = new Snake(snakeLen, snakeDir);
+    this->snake = new Snake(window->GetRenderer() ,snakeLen, snakeDir);
     this->apple = new Apple();
     this->window = window;
     this->appleEaten = 0;

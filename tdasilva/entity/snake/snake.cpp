@@ -1,12 +1,27 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "../../MainSDLWindow.hpp"
 #include "snake.hpp"
 #include "../../utils/utils.hpp"
 #include "../../map/map.hpp"
 
-Snake::Snake(unsigned int snakeLen, char direction)
+Snake::Snake(SDL_Renderer *renderer, unsigned int snakeLen, char direction)
 {
+    // IMG_Init(IMG_INIT_PNG);
+    // imageHead = IMG_Load("textures/snakeHead-32x32.png");
+    // imageBodyStraight = IMG_Load("textures/snakeBodyStraight-32x32.png");
+    // imageBodyTurn = IMG_Load("textures/snakeBodyTurn-32x32.png");
+    // imageTail = IMG_Load("textures/snakeTail-32x32.png");
+    // textureHead = SDL_CreateTextureFromSurface(renderer, imageHead);
+    // SDL_FreeSurface(imageHead);
+    // textureBodyStraight = SDL_CreateTextureFromSurface(renderer, imageBodyStraight);
+    // SDL_FreeSurface(imageBodyStraight);
+    // textureBodyTurn = SDL_CreateTextureFromSurface(renderer, imageBodyTurn);
+    // SDL_FreeSurface(imageBodyTurn);
+    // textureTail = SDL_CreateTextureFromSurface(renderer, imageTail);
+    // SDL_FreeSurface(imageTail);
+
     head = NULL;
     if (direction != 'N' &&
         direction != 'S' &&
@@ -43,6 +58,7 @@ Body Snake::getHead()
 void Snake::printSnake(SDL_Renderer *renderer)
 {
     Body *temp = head;
+    SDL_Rect rectangle;
 
     if (SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255) != 0)
         Utils::SDL_ExitWithError("SetRenderDrawColor");
@@ -52,7 +68,6 @@ void Snake::printSnake(SDL_Renderer *renderer)
 
     while (temp != NULL)
     {
-        SDL_Rect rectangle;
         rectangle.x = temp->getX();
         rectangle.y = temp->getY();
         rectangle.w = BODY_SIZE_X;
@@ -64,6 +79,30 @@ void Snake::printSnake(SDL_Renderer *renderer)
         temp = temp->next;
     }
 }
+
+// void Snake::printTexturedSnake(SDL_Renderer *renderer)
+// {
+//     Body *temp = head;
+//     SDL_Rect rectangle;
+
+//     if (head == NULL)
+//         return;
+
+//     while (temp != NULL)
+//     {
+//         rectangle.x = temp->getX();
+//         rectangle.y = temp->getY();
+//         rectangle.w = BODY_SIZE_X;
+//         rectangle.h = BODY_SIZE_Y;
+
+//         if (SDL_QueryTexture(textureHead, NULL, NULL, &rectangle.w, &rectangle.h) != 0)
+//             Utils::SDL_ExitWithError("QueryTexture");
+
+//         SDL_RenderCopy(renderer, textureHead, NULL, &rectangle);
+
+//         temp = temp->next;
+//     }
+// }
 
 void Snake::debugPrint(void)
 {

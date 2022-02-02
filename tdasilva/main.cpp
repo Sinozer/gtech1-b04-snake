@@ -23,4 +23,4 @@ int main(void)
     return 0;
 }
 
-// TO COMPILE USE: g++ utils/utils.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp entity/fruit/apple.cpp game.cpp main.cpp -lSDL2 -o main
+// TO COMPILE USE: g++ utils/utils.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp entity/fruit/apple.cpp game.cpp main.cpp -lSDL2 -lSDL2_image -o main
