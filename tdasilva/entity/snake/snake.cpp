@@ -44,9 +44,9 @@ Snake::Snake(SDL_Renderer *renderer, unsigned int snakeLen, char direction)
 
 Snake::~Snake()
 {
-    for (int i = 0; i < getLen(); i++)
+    for (int i = 1; i <= getLen(); i++)
     {
-        deleteBody(i + 1);
+        deleteBody(i);
     }
 }
 
@@ -296,16 +296,8 @@ void Snake::growHead()
 void Snake::deleteBody(int bodyPos)
 {
     Body *temp1 = head, *temp2 = NULL;
-    int bodyLen = 0;
 
-    if (head == NULL)
-        return;
-    while (temp1 != NULL)
-    {
-        temp1 = temp1->next;
-        bodyLen++;
-    }
-    if (bodyLen < bodyPos)
+    if (getLen() < bodyPos)
         return;
     temp1 = head;
     if (bodyPos == 1)

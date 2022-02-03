@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MainSDLWindow.hpp"
+#include "menu/menu.hpp"
 #include "entity/snake/snake.hpp"
 #include "entity/fruit/apple.hpp"
 
@@ -9,7 +10,7 @@ class Game
 public:
     Game(MainSDLWindow *window, unsigned int snakeLen, char snakeDir);
     ~Game();
-    SDL_bool play();
+    SDL_bool play(Menu *pause);
     int checkCollide();
     void printGame(SDL_bool score);
     void printScore();

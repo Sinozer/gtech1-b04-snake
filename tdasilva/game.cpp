@@ -4,7 +4,7 @@
 
 Game::Game(MainSDLWindow *window, unsigned int snakeLen, char snakeDir)
 {
-    this->snake = new Snake(window->GetRenderer() ,snakeLen, snakeDir);
+    this->snake = new Snake(window->GetRenderer(), snakeLen, snakeDir);
     this->apple = new Apple();
     this->window = window;
     this->appleEaten = 0;
@@ -18,7 +18,7 @@ Game::~Game()
     delete this->apple;
 }
 
-SDL_bool Game::play()
+SDL_bool Game::play(Menu *pause)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -51,7 +51,9 @@ SDL_bool Game::play()
                 snake->debugPrint();
                 continue;
             case SDL_SCANCODE_D:
-                apple->debugPrint();
+                // apple->debugPrint();
+                if (!pause->active(window, apple, snake))
+                    return SDL_FALSE;
                 continue;
 
             case SDL_SCANCODE_ESCAPE:

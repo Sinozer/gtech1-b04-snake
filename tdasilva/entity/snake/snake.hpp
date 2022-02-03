@@ -29,12 +29,12 @@ private:
     char direction; // North N | South S | West W | East E {default: E}
 
     Body *head;
-    SDL_Surface *imageHead;
-    SDL_Surface *imageBodyStraight;
-    SDL_Surface *imageBodyTurn;
-    SDL_Surface *imageTail;
-    SDL_Texture *textureHead;
-    SDL_Texture *textureBodyStraight;
-    SDL_Texture *textureBodyTurn;
-    SDL_Texture *textureTail;
+    // SDL_Surface *imageHead;
+    // SDL_Surface *imageBodyStraight;
+    // SDL_Surface *imageBodyTurn;
+    // SDL_Surface *imageTail;
+    // SDL_Texture *textureHead;
+    // SDL_Texture *textureBodyStraight;
+    // SDL_Texture *textureBodyTurn;
+    // SDL_Texture *textureTail;
 };
