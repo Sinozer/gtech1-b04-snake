@@ -16,11 +16,11 @@ int main(void)
 
     pause->addButton(pause->getWidth() * 0.5, pause->getHeight() * 0.25,
                      pause->getX() + (pause->getWidth() / (2 * 2)),
-                     pause->getY() + (pause->getHeight() / (4 * 2)), 255, 255, 255, 96);
+                     pause->getY() + (pause->getHeight() / (4 * 2)), 255, 255, 255, 255);
 
     pause->addButton(pause->getWidth() * 0.5, pause->getHeight() * 0.25,
                      pause->getX() + (pause->getWidth() / (2 * 2)),
-                     pause->getY() + pause->lastButton->getHeight() + pause->lastButton->getHeight() / 2 + (pause->getHeight() / (4 * 2)), 255, 255, 255, 96);
+                     pause->getY() + pause->lastButton->getHeight() + pause->lastButton->getHeight() / 2 + (pause->getHeight() / (4 * 2)), 255, 0, 255, 255);
 
     Game *game = new Game(window, 6, 'E');
 
@@ -38,4 +38,4 @@ int main(void)
     return 0;
 }
 
-// TO COMPILE USE: g++ utils/utils.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp entity/fruit/apple.cpp game.cpp menu/button.cpp menu/menu.cpp main.cpp -lSDL2 -lSDL2_image -o main
+// TO COMPILE USE: g++ utils/utils.cpp utils/text.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp entity/fruit/apple.cpp game.cpp menu/button.cpp menu/menu.cpp main.cpp -lSDL2 -lSDL2_image -lSDL2_ttf -o main && ./mainle.cpp game.cpp menu/button.cpp menu/menu.cpp main.cpp -lSDL2 -lSDL2_image -lSDL2_ttf -o main && ./main

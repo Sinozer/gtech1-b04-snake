@@ -1,6 +1,7 @@
 #pragma once
 
 #include "button.hpp"
+#include "../MainSDLWindow.hpp"
 #include "../map/map.hpp"
 #include "../entity/fruit/apple.hpp"
 #include "../entity/snake/snake.hpp"
@@ -47,6 +48,8 @@ public:
     void addButton(int width, int height, int x, int y,
                    int colorBackgroundR, int colorBackgroundG,
                    int colorBackgroundB, int colorBackgroundA);
+
+    void addButton(Button *button);
 
     int removeButton(int id);
 

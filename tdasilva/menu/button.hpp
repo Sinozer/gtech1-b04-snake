@@ -39,6 +39,8 @@ public:
     int getColorBackgroundB();
     int getColorBackgroundA();
 
+    void printButton(MainSDLWindow *window, Button *selectedButton);
+
 private:
     int id;
 

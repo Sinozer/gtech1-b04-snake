@@ -22,9 +22,9 @@ Menu::~Menu()
 
 void Menu::init()
 {
-    this->firstButton == NULL;
-    this->lastButton == NULL;
-    this->selectedButton == NULL;
+    this->firstButton = NULL;
+    this->lastButton = NULL;
+    this->selectedButton = NULL;
 }
 
 Button Menu::getFirstButton()
@@ -134,36 +134,42 @@ void Menu::addButton(int width, int height, int x, int y,
                      int colorBackgroundR, int colorBackgroundG,
                      int colorBackgroundB, int colorBackgroundA)
 {
-    printf("start\n");
     Button *button = new Button(1, width, height, x, y,
                                 colorBackgroundR, colorBackgroundG,
                                 colorBackgroundB, colorBackgroundA);
 
-    // this->firstButton = NULL;
-
     if (firstButton == NULL)
     {
-        printf("NULL\n");
         firstButton = button;
+        lastButton = button;
         return;
     }
-    printf("NOTNULL\n");
     button->next = this->firstButton;
     firstButton->previous = button;
 
     int newId = 2;
     Button *temp = this->firstButton;
 
-    while (temp->next != NULL)
+    do
     {
         newId++;
-        temp = temp->next;
-    }
+        if (temp->next != NULL)
+            temp = temp->next;
+    } while (temp->next != NULL);
 
     button->setId(newId);
 
     this->lastButton, temp->next = button;
     button->previous = temp;
+}
+
+void Menu::addButton(Button *button)
+{
+    if (firstButton == NULL)
+        firstButton = button;
+    lastButton = button;
+
+    lastButton->next = button;
 }
 
 int Menu::removeButton(int id)
@@ -265,21 +271,11 @@ void Menu::printMenu(MainSDLWindow *window, Apple *apple, Snake *snake)
         Button *temp = this->firstButton;
         do
         {
-            if (SDL_SetRenderDrawColor(window->GetRenderer(), temp->getColorBackgroundR(),
-                                       temp->getColorBackgroundG(), temp->getColorBackgroundB(),
-                                       temp->getColorBackgroundA()) != 0)
-                Utils::SDL_ExitWithError("SetRenderDrawColor");
+            temp->printButton(window, selectedButton);
 
-            rectangle.x = temp->getX();
-            rectangle.y = temp->getY();
-            rectangle.w = temp->getWidth();
-            rectangle.h = temp->getHeight();
-            if (temp->next != NULL)
                 temp = temp->next;
-        } while (temp->next != NULL);
+        } while (temp != NULL && temp != this->firstButton);
     }
-    if (SDL_RenderFillRect(window->GetRenderer(), &rectangle) != 0)
-        Utils::SDL_ExitWithError("RenderFillRect");
     SDL_RenderPresent(window->GetRenderer());
 }
 
@@ -287,6 +283,7 @@ SDL_bool Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
 {
     if (firstButton != NULL)
         selectedButton = firstButton;
+
     SDL_bool isActive = SDL_TRUE;
     while (isActive)
     {
@@ -304,9 +301,12 @@ SDL_bool Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
                     continue;
                 case SDL_SCANCODE_DOWN:
                     changeSelectedButton('D');
-                    printf("X: %d\nY: %d\nW: %d\n H: %d\n\n", getX(), getY(), getWidth(), getHeight());
                     continue;
+                case SDL_SCANCODE_RIGHT:
+                    if (selectedButton != NULL)
+                        printf("X: %d\nY: %d\nW: %d\n H: %d\n\n", selectedButton->getX(), selectedButton->getY(), selectedButton->getWidth(), selectedButton->getHeight());
 
+                    continue;
                 case SDL_SCANCODE_ESCAPE:
                     isActive = SDL_FALSE;
                     continue;

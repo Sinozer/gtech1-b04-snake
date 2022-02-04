@@ -4,8 +4,8 @@ Button::Button(int id, int width, int height, int x, int y,
                int colorBackgroundR, int colorBackgroundG,
                int colorBackgroundB, int colorBackgroundA)
 {
-    this->previous == NULL;
-    this->next == NULL;
+    this->previous = NULL;
+    this->next = NULL;
 
     setWidth(width);
     setHeight(height);
@@ -117,4 +117,38 @@ int Button::getColorBackgroundB()
 int Button::getColorBackgroundA()
 {
     return this->colorBackgroundA;
+}
+
+void Button::printButton(MainSDLWindow *window, Button *selectedButton)
+{
+    SDL_Rect rectangle;
+
+    if (SDL_SetRenderDrawColor(window->GetRenderer(), this->getColorBackgroundR(),
+                               this->getColorBackgroundG(), this->getColorBackgroundB(),
+                               this->getColorBackgroundA()) != 0)
+        Utils::SDL_ExitWithError("SetRenderDrawColor");
+
+    rectangle.x = this->getX();
+    rectangle.y = this->getY();
+    rectangle.w = this->getWidth();
+    rectangle.h = this->getHeight();
+
+    if (SDL_RenderFillRect(window->GetRenderer(), &rectangle) != 0)
+        Utils::SDL_ExitWithError("RenderFillRect");
+
+    if (this != selectedButton)
+    {
+        if (SDL_SetRenderDrawColor(window->GetRenderer(), 0,
+                                   0, 0,
+                                   96) != 0)
+            Utils::SDL_ExitWithError("SetRenderDrawColor");
+
+        rectangle.x = this->getX();
+        rectangle.y = this->getY();
+        rectangle.w = this->getWidth();
+        rectangle.h = this->getHeight();
+
+        if (SDL_RenderFillRect(window->GetRenderer(), &rectangle) != 0)
+            Utils::SDL_ExitWithError("RenderFillRect");
+    }
 }
