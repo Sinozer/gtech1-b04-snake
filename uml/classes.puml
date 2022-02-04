@@ -1,0 +1,231 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class Apple {
+	+Apple()
+	+getX() : int
+	+getY() : int
+	-x : int
+	-y : int
+	+debugPrint() : void
+	+printApple(SDL_Renderer* renderer) : void
+	+setRandomCoord() : void
+	+setX(int x) : void
+	+setY(int y) : void
+}
+
+
+class Body {
+	+Body(int x, int y, char direction)
+	+next : Body*
+	-direction : char
+	+getDirection() : char
+	+getX() : int
+	+getY() : int
+	-x : int
+	-y : int
+	+setDirection(char direction) : void
+	+setX(int x) : void
+	+setY(int y) : void
+}
+
+
+class Button {
+	+Button(int id, int width, int height, int x, int y, int colorBackgroundR, int colorBackgroundG, int colorBackgroundB, int colorBackgroundA)
+	+~Button()
+	+next : Button*
+	+previous : Button*
+	-colorBackgroundA : int
+	-colorBackgroundB : int
+	-colorBackgroundG : int
+	-colorBackgroundR : int
+	+getColorBackgroundA() : int
+	+getColorBackgroundB() : int
+	+getColorBackgroundG() : int
+	+getColorBackgroundR() : int
+	+getHeight() : int
+	+getId() : int
+	+getWidth() : int
+	+getX() : int
+	+getY() : int
+	-height : int
+	-id : int
+	-width : int
+	-x : int
+	-y : int
+	+printButton(MainSDLWindow* window, Button* selectedButton) : void
+	+setColorBackgroundA(int colorBackgroundA) : void
+	+setColorBackgroundB(int colorBackgroundB) : void
+	+setColorBackgroundG(int colorBackgroundG) : void
+	+setColorBackgroundR(int colorBackgroundR) : void
+	+setColorBackgroundRGBA(int colorBackgroundR, int colorBackgroundG, int colorBackgroundB, int colorBackgroundA) : void
+	+setHeight(int height) : void
+	+setId(int id) : void
+	+setWidth(int width) : void
+	+setX(int x) : void
+	+setY(int y) : void
+}
+
+
+class Game {
+	+Game(MainSDLWindow* window, unsigned int snakeLen, char snakeDir)
+	+~Game()
+	-apple : Apple*
+	-window : MainSDLWindow*
+	+play(Menu* pause) : SDL_bool
+	-score : SDL_bool
+	-snake : Snake*
+	-appleEaten : int
+	+checkCollide() : int
+	+drawDigit(int digit, int posX, int posY) : void
+	+drawNumber(int posX, int posY) : void
+	+printGame(SDL_bool score) : void
+	+printScore() : void
+}
+
+
+class MainSDLWindow {
+	+MainSDLWindow(const char* title, int width, int height)
+	+~MainSDLWindow()
+	+GetRenderer() : SDL_Renderer*
+	-renderer : SDL_Renderer*
+	-window : SDL_Window*
+	+Init(const char* title, int width, int height) : int
+	+clearRenderer() : void
+}
+
+
+class Map {
+	+Map()
+	+{static} printMap(SDL_Renderer* renderer) : void
+}
+
+
+class Menu {
+	+Menu(int width, int height, int x, int y, int colorBackgroundR, int colorBackgroundG, int colorBackgroundB, int colorBackgroundA)
+	+~Menu()
+	+getFirstButton() : Button
+	+getLastButton() : Button
+	+getSelectedButton() : Button
+	+firstButton : Button*
+	+lastButton : Button*
+	+selectedButton : Button*
+	+active(MainSDLWindow* window, Apple* apple, Snake* snake) : SDL_bool
+	-colorBackgroundA : int
+	-colorBackgroundB : int
+	-colorBackgroundG : int
+	-colorBackgroundR : int
+	+getColorBackgroundA() : int
+	+getColorBackgroundB() : int
+	+getColorBackgroundG() : int
+	+getColorBackgroundR() : int
+	+getHeight() : int
+	+getLen() : int
+	+getWidth() : int
+	+getX() : int
+	+getY() : int
+	-height : int
+	+removeButton(int id) : int
+	-width : int
+	-x : int
+	-y : int
+	+addButton(int width, int height, int x, int y, int colorBackgroundR, int colorBackgroundG, int colorBackgroundB, int colorBackgroundA) : void
+	+addButton(Button* button) : void
+	+changeSelectedButton(char direction) : void
+	+init() : void
+	+printMenu(MainSDLWindow* window, Apple* apple, Snake* snake) : void
+	+setColorBackgroundA(int colorBackgroundA) : void
+	+setColorBackgroundB(int colorBackgroundB) : void
+	+setColorBackgroundG(int colorBackgroundG) : void
+	+setColorBackgroundR(int colorBackgroundR) : void
+	+setColorBackgroundRGBA(int colorBackgroundR, int colorBackgroundG, int colorBackgroundB, int colorBackgroundA) : void
+	+setHeight(int height) : void
+	+setWidth(int width) : void
+	+setX(int x) : void
+	+setY(int y) : void
+}
+
+
+class Snake {
+	+Snake(SDL_Renderer* renderer, unsigned int snakeLen, char direction)
+	+~Snake()
+	+getHead() : Body
+	-head : Body*
+	+checkCollideBody() : SDL_bool
+	+checkCollideWall() : SDL_bool
+	-direction : char
+	+getLen() : int
+	+changeDirection(char direction) : void
+	+debugPrint() : void
+	+deleteBody(int bodyPos) : void
+	+grow(int x, int y, char direction) : void
+	+growHead() : void
+	+growTail() : void
+	+move() : void
+	+printSnake(SDL_Renderer* renderer) : void
+	+printTexturedSnake(SDL_Renderer* renderer) : void
+}
+
+
+class Text {
+	+Text(SDL_Renderer* renderer)
+	+~Text()
+	-renderer : SDL_Renderer*
+	-texture : SDL_Texture*
+	-font : TTF_Font*
+	+printText(char* text, unsigned int r, unsigned int g, unsigned int b) : void
+}
+
+
+class Utils {
+	+{static} SDL_ExitWithError(const char* message) : void
+	+{static} SDL_Limit_FPS(unsigned int limit, int FPSLimit) : void
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+.Body o-- .Body
+
+
+.Button "2" o-- .Button
+
+
+.Game o-- .Apple
+
+
+.Game o-- .MainSDLWindow
+
+
+.Game o-- .Snake
+
+
+.Menu "3" o-- .Button
+
+
+.Snake o-- .Body
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml
+
