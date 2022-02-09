@@ -178,37 +178,6 @@ void Menu::addButton(Button *button, int id)
     lastButton->next = button;
 }
 
-int Menu::removeButton(int id)
-{
-    if (getLen() < id)
-    {
-        return -1;
-    }
-
-    Button *temp1 = firstButton;
-    Button *temp2, *temp3 = NULL;
-
-    if (id == 1)
-    {
-        firstButton, lastButton->next = firstButton->next;
-        firstButton->previous = lastButton;
-        delete temp1;
-        return 0;
-    }
-
-    while (id-- > 1)
-    {
-        temp2 = temp1;
-        temp1 = temp1->next;
-        temp1->previous = temp2;
-    }
-    temp3 = temp1->next;
-    temp2->next = temp3;
-    temp3->previous = temp2->next;
-    delete temp1;
-    return 0;
-}
-
 void Menu::changeSelectedButton(char direction)
 {
     if (selectedButton != NULL)
@@ -293,7 +262,7 @@ void Menu::printMenu(MainSDLWindow *window, Apple *apple, Snake *snake)
     SDL_RenderPresent(window->GetRenderer());
 }
 
-int Menu::activeStart(MainSDLWindow *window)
+int Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
 {
     if (firstButton != NULL)
         selectedButton = firstButton;
@@ -330,65 +299,11 @@ int Menu::activeStart(MainSDLWindow *window)
                         return -1;
                     default:
                         break;
-                    }
-                case SDL_SCANCODE_ESCAPE:
-                    isActive = SDL_FALSE;
-                    continue;
-
-                default:
-                    return 0;
-                }
-
-            case SDL_QUIT:
-                return -1;
-
-            default:
-                continue;
-            }
-        }
-        printMenu(window, NULL, NULL);
-        Utils::SDL_Limit_FPS(frame_limit, 122);
-    }
-    return 0;
-}
-
-int Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
-{
-    if (firstButton != NULL)
-        selectedButton = firstButton;
-
-    SDL_bool isActive = SDL_TRUE;
-    while (isActive)
-    {
-        unsigned int frame_limit = SDL_GetTicks() + 122;
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.scancode)
-                {
-                case SDL_SCANCODE_UP:
-                    changeSelectedButton('U');
-                    continue;
-                case SDL_SCANCODE_DOWN:
-                    changeSelectedButton('D');
-                    continue;
-                case SDL_SCANCODE_RIGHT:
-                    if (selectedButton != NULL)
-                        printf("X: %d\nY: %d\nW: %d\nH: %d\nID: %d\n\n", selectedButton->getX(), selectedButton->getY(), selectedButton->getWidth(), selectedButton->getHeight(), selectedButton->getId());
-                    continue;
-                case SDL_SCANCODE_RETURN:
-                    switch (selectedButton->getId())
-                    {
                     case 3:
                         return 3;
                         break;
                     case 4:
                         return 4;
-                    case 5:
-                        return 5;
                     }
                 case SDL_SCANCODE_ESCAPE:
                     isActive = SDL_FALSE;

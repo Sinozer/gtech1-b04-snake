@@ -18,7 +18,7 @@ public:
     void setDirection(char direction); // Set the direction
 
 private:
-    int x;
-    int y;
-    char direction;
+    int x; // Position in pixels for this body part on X axis
+    int y; // Position in pixels for this body part on Y axis
+    char direction; // Direction in char for this body part (North N | South S | West W | East E)
 };

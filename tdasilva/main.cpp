@@ -26,7 +26,7 @@ int main(void)
 
     do
     {
-        switch (start->activeStart(window))
+        switch (start->active(window, NULL, NULL))
         {
         case 1:
         {

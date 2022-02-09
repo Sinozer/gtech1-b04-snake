@@ -6,21 +6,8 @@
 #include "../../utils/utils.hpp"
 #include "../../map/map.hpp"
 
-Snake::Snake(SDL_Renderer *renderer, unsigned int snakeLen, char direction)
+Snake::Snake(unsigned int snakeLen, char direction)
 {
-    // IMG_Init(IMG_INIT_PNG);
-    // imageHead = IMG_Load("textures/snakeHead-32x32.png");
-    // imageBodyStraight = IMG_Load("textures/snakeBodyStraight-32x32.png");
-    // imageBodyTurn = IMG_Load("textures/snakeBodyTurn-32x32.png");
-    // imageTail = IMG_Load("textures/snakeTail-32x32.png");
-    // textureHead = SDL_CreateTextureFromSurface(renderer, imageHead);
-    // SDL_FreeSurface(imageHead);
-    // textureBodyStraight = SDL_CreateTextureFromSurface(renderer, imageBodyStraight);
-    // SDL_FreeSurface(imageBodyStraight);
-    // textureBodyTurn = SDL_CreateTextureFromSurface(renderer, imageBodyTurn);
-    // SDL_FreeSurface(imageBodyTurn);
-    // textureTail = SDL_CreateTextureFromSurface(renderer, imageTail);
-    // SDL_FreeSurface(imageTail);
 
     head = NULL;
     if (direction != 'N' &&
