@@ -1,10 +1,14 @@
 #include "menu.hpp"
 
-Menu::Menu(int width, int height, int x, int y,
+Menu::Menu(const char *title, int width, int height, int x, int y,
            int colorBackgroundR, int colorBackgroundG,
            int colorBackgroundB, int colorBackgroundA)
 {
-    init();
+    this->firstButton = NULL;
+    this->lastButton = NULL;
+    this->selectedButton = NULL;
+
+    setTitle(title);
 
     setWidth(width);
     setHeight(height);
@@ -18,13 +22,6 @@ Menu::Menu(int width, int height, int x, int y,
 
 Menu::~Menu()
 {
-}
-
-void Menu::init()
-{
-    this->firstButton = NULL;
-    this->lastButton = NULL;
-    this->selectedButton = NULL;
 }
 
 Button Menu::getFirstButton()
@@ -82,30 +79,40 @@ int Menu::getY()
     return this->y;
 }
 
-void Menu::setColorBackgroundRGBA(int colorBackgroundR, int colorBackgroundG,
-                                  int colorBackgroundB, int colorBackgroundA)
+void Menu::setTitle(const char *title)
+{
+    this->title = title;
+}
+
+const char *Menu::getTitle()
+{
+    return this->title;
+}
+
+void Menu::setColorBackgroundRGBA(Uint8 colorBackgroundR, Uint8 colorBackgroundG,
+                                  Uint8 colorBackgroundB, Uint8 colorBackgroundA)
 {
     this->colorBackgroundR = colorBackgroundR;
     this->colorBackgroundG = colorBackgroundG;
     this->colorBackgroundB = colorBackgroundB;
     this->colorBackgroundA = colorBackgroundA;
 }
-void Menu::setColorBackgroundR(int colorBackgroundR)
+void Menu::setColorBackgroundR(Uint8 colorBackgroundR)
 {
     this->colorBackgroundR = colorBackgroundR;
 }
 
-void Menu::setColorBackgroundG(int colorBackgroundG)
+void Menu::setColorBackgroundG(Uint8 colorBackgroundG)
 {
     this->colorBackgroundG = colorBackgroundG;
 }
 
-void Menu::setColorBackgroundB(int colorBackgroundB)
+void Menu::setColorBackgroundB(Uint8 colorBackgroundB)
 {
     this->colorBackgroundB = colorBackgroundB;
 }
 
-void Menu::setColorBackgroundA(int colorBackgroundA)
+void Menu::setColorBackgroundA(Uint8 colorBackgroundA)
 {
     this->colorBackgroundA = colorBackgroundA;
 }
@@ -130,16 +137,17 @@ int Menu::getColorBackgroundA()
     return this->colorBackgroundA;
 }
 
-void Menu::addButton(int width, int height, int x, int y,
-                     int colorBackgroundR, int colorBackgroundG,
-                     int colorBackgroundB, int colorBackgroundA)
+void Menu::addButton(int id, const char *title, int width, int height, int x, int y,
+                     Uint8 colorBackgroundR, Uint8 colorBackgroundG,
+                     Uint8 colorBackgroundB, Uint8 colorBackgroundA)
 {
-    Button *button = new Button(1, width, height, x, y,
+    Button *button = new Button(1, title, width, height, x, y,
                                 colorBackgroundR, colorBackgroundG,
                                 colorBackgroundB, colorBackgroundA);
 
     if (firstButton == NULL)
     {
+        button->setId(id);
         firstButton = button;
         lastButton = button;
         return;
@@ -147,23 +155,21 @@ void Menu::addButton(int width, int height, int x, int y,
     button->next = this->firstButton;
     firstButton->previous = button;
 
-    int newId = 2;
     Button *temp = this->firstButton;
 
     do
     {
-        newId++;
         if (temp->next != NULL)
             temp = temp->next;
     } while (temp->next != NULL);
 
-    button->setId(newId);
+    button->setId(id);
 
     this->lastButton, temp->next = button;
     button->previous = temp;
 }
 
-void Menu::addButton(Button *button)
+void Menu::addButton(Button *button, int id)
 {
     if (firstButton == NULL)
         firstButton = button;
@@ -266,6 +272,14 @@ void Menu::printMenu(MainSDLWindow *window, Apple *apple, Snake *snake)
     if (SDL_RenderFillRect(window->GetRenderer(), &rectangle) != 0)
         Utils::SDL_ExitWithError("RenderFillRect");
 
+    int tempX;
+    int tempY;
+    TTF_SizeText(window->getTextBox()->getMenuFont(), this->title, &tempX, &tempY);
+
+    window->getTextBox()->printText(this->title, window->getTextBox()->getMenuFont(),
+                                    this->getX() + (this->getWidth() / 2) - (tempX / 2),
+                                    this->getY() + (this->getHeight() / 35), 0, 0, 0);
+
     if (this->firstButton != NULL)
     {
         Button *temp = this->firstButton;
@@ -273,13 +287,13 @@ void Menu::printMenu(MainSDLWindow *window, Apple *apple, Snake *snake)
         {
             temp->printButton(window, selectedButton);
 
-                temp = temp->next;
+            temp = temp->next;
         } while (temp != NULL && temp != this->firstButton);
     }
     SDL_RenderPresent(window->GetRenderer());
 }
 
-SDL_bool Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
+int Menu::activeStart(MainSDLWindow *window)
 {
     if (firstButton != NULL)
         selectedButton = firstButton;
@@ -304,9 +318,78 @@ SDL_bool Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
                     continue;
                 case SDL_SCANCODE_RIGHT:
                     if (selectedButton != NULL)
-                        printf("X: %d\nY: %d\nW: %d\n H: %d\n\n", selectedButton->getX(), selectedButton->getY(), selectedButton->getWidth(), selectedButton->getHeight());
-
+                        printf("X: %d\nY: %d\nW: %d\nH: %d\nID: %d\n\n", selectedButton->getX(), selectedButton->getY(), selectedButton->getWidth(), selectedButton->getHeight(), selectedButton->getId());
                     continue;
+                case SDL_SCANCODE_RETURN:
+                    switch (selectedButton->getId())
+                    {
+                    case 1:
+                        return 1;
+                        break;
+                    case 2:
+                        return -1;
+                    default:
+                        break;
+                    }
+                case SDL_SCANCODE_ESCAPE:
+                    isActive = SDL_FALSE;
+                    continue;
+
+                default:
+                    return 0;
+                }
+
+            case SDL_QUIT:
+                return -1;
+
+            default:
+                continue;
+            }
+        }
+        printMenu(window, NULL, NULL);
+        Utils::SDL_Limit_FPS(frame_limit, 122);
+    }
+    return 0;
+}
+
+int Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
+{
+    if (firstButton != NULL)
+        selectedButton = firstButton;
+
+    SDL_bool isActive = SDL_TRUE;
+    while (isActive)
+    {
+        unsigned int frame_limit = SDL_GetTicks() + 122;
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.scancode)
+                {
+                case SDL_SCANCODE_UP:
+                    changeSelectedButton('U');
+                    continue;
+                case SDL_SCANCODE_DOWN:
+                    changeSelectedButton('D');
+                    continue;
+                case SDL_SCANCODE_RIGHT:
+                    if (selectedButton != NULL)
+                        printf("X: %d\nY: %d\nW: %d\nH: %d\nID: %d\n\n", selectedButton->getX(), selectedButton->getY(), selectedButton->getWidth(), selectedButton->getHeight(), selectedButton->getId());
+                    continue;
+                case SDL_SCANCODE_RETURN:
+                    switch (selectedButton->getId())
+                    {
+                    case 3:
+                        return 3;
+                        break;
+                    case 4:
+                        return 4;
+                    case 5:
+                        return 5;
+                    }
                 case SDL_SCANCODE_ESCAPE:
                     isActive = SDL_FALSE;
                     continue;
@@ -325,5 +408,5 @@ SDL_bool Menu::active(MainSDLWindow *window, Apple *apple, Snake *snake)
         printMenu(window, apple, snake);
         Utils::SDL_Limit_FPS(frame_limit, 122);
     }
-    return SDL_TRUE;
+    return 0;
 }

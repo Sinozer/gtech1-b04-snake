@@ -18,7 +18,7 @@ Game::~Game()
     delete this->apple;
 }
 
-SDL_bool Game::play(Menu *pause)
+int Game::play(Menu *pause)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -50,16 +50,18 @@ SDL_bool Game::play(Menu *pause)
             case SDL_SCANCODE_C:
                 snake->debugPrint();
                 continue;
-            case SDL_SCANCODE_D:
-                // apple->debugPrint();
-                if (!pause->active(window, apple, snake))
-                    return SDL_FALSE;
-                continue;
 
             case SDL_SCANCODE_ESCAPE:
-                return SDL_FALSE;
-
-            default:
+                switch (pause->active(window, apple, snake))
+                {
+                case 3:
+                    break;
+                // case 4:
+                //     /* code */
+                //     break;
+                case 4:
+                    return -1;
+                }
                 continue;
             }
 
@@ -85,17 +87,17 @@ SDL_bool Game::play(Menu *pause)
     {
     case -1:
     case -2:
-        return SDL_FALSE;
+        return -1;
     case 0:
         break;
     case 9:
-        return SDL_FALSE;
+        return -1;
     default:
         break;
     }
     snake->move();
     printGame(score);
-    return SDL_TRUE;
+    return 0;
 }
 
 int Game::checkCollide()
@@ -157,63 +159,15 @@ void Game::printScore()
     scoreBackground.y = 0;
     SDL_SetRenderDrawColor(window->GetRenderer(), 0, 0, 0, 96);
     SDL_RenderFillRect(this->window->GetRenderer(), &scoreBackground);
-    drawNumber(10, 10);
-}
+    
+    int tempX;
+    int tempY;
+    std::string tempStr = "SCORE: " + std::to_string(this->appleEaten);
+    const char *tempTitle = tempStr.c_str();
+    
+    TTF_SizeText(window->getTextBox()->getMenuFont(), tempTitle, &tempX, &tempY);
 
-char *zero = (char *)"xxxx xx xx xxxx";
-char *one = (char *)"  x  x  x  x  x";
-char *two = (char *)"xxx  xxxxx  xxx";
-char *three = (char *)"xxx  xxxx  xxxx";
-char *four = (char *)"x xx xxxx  x  x";
-char *five = (char *)"xxxx  xxx  xxxx";
-char *six = (char *)"xxxx  xxxx xxxx";
-char *seven = (char *)"xxx  x  x  x  x";
-char *eight = (char *)"xxxx xxxxx xxxx";
-char *nine = (char *)"xxxx xxxx  xxxx";
-
-char **digits[] = {&zero, &one, &two, &three, &four, &five, &six, &seven, &eight, &nine};
-
-void Game::drawDigit(int digit, int posX, int posY)
-{
-    SDL_Rect rect = {0, 0, 10, 10};
-    SDL_SetRenderDrawColor(window->GetRenderer(), 255, 255, 255, 255);
-
-    digit = digit % 10;
-
-    for (int y = 0; y < 5; ++y)
-    {
-        for (int x = 0; x < 3; ++x)
-        {
-            if ((*(digits[digit]))[y * 3 + x] == 'x')
-            {
-                rect.x = posX + x * 10;
-                rect.y = posY + y * 10;
-                SDL_RenderFillRect(window->GetRenderer(), &rect);
-            }
-        }
-    }
-}
-
-void Game::drawNumber(int posX, int posY)
-{
-    int tempScore = appleEaten;
-    int count = 0;
-
-    while (tempScore > 9)
-    {
-        tempScore /= 10;
-        count++;
-    }
-
-    int p;
-
-    for (int i = count; i > 0; i--)
-    {
-        p = pow(10, i);
-        tempScore = ((this->appleEaten - this->appleEaten % p) / p) % 10;
-        drawDigit(tempScore, posX, posY);
-        posX += 40;
-    }
-
-    drawDigit(this->appleEaten % 10, posX, posY);
+    window->getTextBox()->printText(tempTitle, window->getTextBox()->getMenuFont(),
+                                    ((WINDOW_SIZE_X * WINDOW_CHUNK_SIZE_X) * 0.5) - (tempX / 2),
+                                    ((WINDOW_SIZE_Y * WINDOW_CHUNK_SIZE_Y) * 0.5) - (tempY / 2), 0, 0, 0);
 }

@@ -10,9 +10,9 @@ class Button
 public:
     Button *previous;
     Button *next;
-    Button(int id, int width, int height, int x, int y,
-           int colorBackgroundR, int colorBackgroundG,
-           int colorBackgroundB, int colorBackgroundA);
+    Button(int id, const char *title, int width, int height, int x, int y,
+           Uint8 colorBackgroundR, Uint8 colorBackgroundG,
+           Uint8 colorBackgroundB, Uint8 colorBackgroundA);
     ~Button();
 
     void setId(int id);
@@ -28,12 +28,15 @@ public:
     int getX();
     int getY();
 
-    void setColorBackgroundRGBA(int colorBackgroundR, int colorBackgroundG,
-                                int colorBackgroundB, int colorBackgroundA);
-    void setColorBackgroundR(int colorBackgroundR);
-    void setColorBackgroundG(int colorBackgroundG);
-    void setColorBackgroundB(int colorBackgroundB);
-    void setColorBackgroundA(int colorBackgroundA);
+    void setTitle(const char *title);
+    const char *getTitle();
+
+    void setColorBackgroundRGBA(Uint8 colorBackgroundR, Uint8 colorBackgroundG,
+                                Uint8 colorBackgroundB, Uint8 colorBackgroundA);
+    void setColorBackgroundR(Uint8 colorBackgroundR);
+    void setColorBackgroundG(Uint8 colorBackgroundG);
+    void setColorBackgroundB(Uint8 colorBackgroundB);
+    void setColorBackgroundA(Uint8 colorBackgroundA);
     int getColorBackgroundR();
     int getColorBackgroundG();
     int getColorBackgroundB();
@@ -49,6 +52,8 @@ private:
 
     int x;
     int y;
+
+    const char *title;
 
     int colorBackgroundR;
     int colorBackgroundG;

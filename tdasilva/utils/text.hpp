@@ -1,15 +1,22 @@
 #pragma once
 
 #include <SDL2/SDL_ttf.h>
+#include "utils.hpp"
 
 class Text
 {
 public:
-    Text(SDL_Renderer *renderer);
+    Text();
     ~Text();
-    void printText(char* text, unsigned int r, unsigned int g, unsigned int b);
+
+    int init(SDL_Renderer *renderer);
+    SDL_Renderer *getRenderer();
+    TTF_Font *getMenuFont();
+    TTF_Font *getButtonFont();
+    void printText(const char* text, TTF_Font *font, int x, int y, Uint8 r, Uint8 g, Uint8 b);
+
 private:
     SDL_Renderer *renderer;
-    SDL_Texture *texture;
-    TTF_Font *font;
+    TTF_Font *fontMenu;
+    TTF_Font *fontButton;
 };

@@ -1,11 +1,14 @@
 #include "button.hpp"
 
-Button::Button(int id, int width, int height, int x, int y,
-               int colorBackgroundR, int colorBackgroundG,
-               int colorBackgroundB, int colorBackgroundA)
+Button::Button(int id, const char *title, int width, int height, int x, int y,
+               Uint8 colorBackgroundR, Uint8 colorBackgroundG,
+               Uint8 colorBackgroundB, Uint8 colorBackgroundA)
 {
     this->previous = NULL;
     this->next = NULL;
+
+    this->setId(id);
+    this->setTitle(title);
 
     setWidth(width);
     setHeight(height);
@@ -29,6 +32,11 @@ void Button::setId(int id)
 int Button::getId()
 {
     return this->id;
+}
+
+void Button::setTitle(const char *title)
+{
+    this->title = title;
 }
 
 void Button::setWidth(int width)
@@ -71,30 +79,30 @@ int Button::getY()
     return this->y;
 }
 
-void Button::setColorBackgroundRGBA(int colorBackgroundR, int colorBackgroundG,
-                                    int colorBackgroundB, int colorBackgroundA)
+void Button::setColorBackgroundRGBA(Uint8 colorBackgroundR, Uint8 colorBackgroundG,
+                                    Uint8 colorBackgroundB, Uint8 colorBackgroundA)
 {
     this->colorBackgroundR = colorBackgroundR;
     this->colorBackgroundG = colorBackgroundG;
     this->colorBackgroundB = colorBackgroundB;
     this->colorBackgroundA = colorBackgroundA;
 }
-void Button::setColorBackgroundR(int colorBackgroundR)
+void Button::setColorBackgroundR(Uint8 colorBackgroundR)
 {
     this->colorBackgroundR = colorBackgroundR;
 }
 
-void Button::setColorBackgroundG(int colorBackgroundG)
+void Button::setColorBackgroundG(Uint8 colorBackgroundG)
 {
     this->colorBackgroundG = colorBackgroundG;
 }
 
-void Button::setColorBackgroundB(int colorBackgroundB)
+void Button::setColorBackgroundB(Uint8 colorBackgroundB)
 {
     this->colorBackgroundB = colorBackgroundB;
 }
 
-void Button::setColorBackgroundA(int colorBackgroundA)
+void Button::setColorBackgroundA(Uint8 colorBackgroundA)
 {
     this->colorBackgroundA = colorBackgroundA;
 }
@@ -135,6 +143,14 @@ void Button::printButton(MainSDLWindow *window, Button *selectedButton)
 
     if (SDL_RenderFillRect(window->GetRenderer(), &rectangle) != 0)
         Utils::SDL_ExitWithError("RenderFillRect");
+
+    int tempX;
+    int tempY;
+    TTF_SizeText(window->getTextBox()->getButtonFont(), this->title, &tempX, &tempY);
+
+    window->getTextBox()->printText(this->title, window->getTextBox()->getButtonFont(),
+                                    this->getX() + (this->getWidth() / 2) - (tempX / 2),
+                                    this->getY() + (this->getHeight() / 2) - (tempY / 2), 0, 0, 0);
 
     if (this != selectedButton)
     {

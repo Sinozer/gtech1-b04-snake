@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include "utils/text.hpp"
 
 #define WINDOW_CHUNK_SIZE_X 32 // Size of the square in pixels for X axis
 #define WINDOW_CHUNK_SIZE_Y 32 // Size of the square in pixels for Y axis
@@ -21,8 +22,10 @@ public:
     int Init(const char *title, int width, int height);
     void clearRenderer(void);
     SDL_Renderer *GetRenderer(void);
+    Text *getTextBox(void);
 
 private:
     SDL_Window *window;
     SDL_Renderer *renderer;
+    Text *textBox;
 };
