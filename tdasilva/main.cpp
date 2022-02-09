@@ -72,4 +72,4 @@ int main(void)
     return 0;
 }
 
-// TO COMPILE USE: g++ utils/utils.cpp utils/text.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp entity/fruit/apple.cpp game.cpp menu/button.cpp menu/menu.cpp main.cpp -lSDL2 -lSDL2_image -lSDL2_ttf -o main && ./main
+// TO COMPILE USE: g++ utils/utils.cpp utils/text.cpp MainSDLWindow.cpp map/map.cpp entity/snake/body.cpp entity/snake/snake.cpp entity/fruit/apple.cpp game.cpp menu/button.cpp menu/menu.cpp main.cpp -lSDL2 -lSDL2_ttf -o main && ./main
